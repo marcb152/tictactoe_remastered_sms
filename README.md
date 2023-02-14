@@ -5,3 +5,4 @@ The goal was to create a tic-tac-toe game that has an editable grid size and a f
 - The first game mode, called 'TicTacToe mode', is pretty much like the original game, the first player that creates an alignment wins the game.
 - The second game mode, called 'Max score mode', consists of maximizing the score, one aligment provides 1 additional point.
 
+WIP: Work In Progress, the saving/loading system isn't operationnal at all, and the score isn't showed up to the player.
