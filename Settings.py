@@ -9,7 +9,6 @@ class Settings:
         """
         self.gridSizeX = 5
         self.gridSizeY = 5
-        # self.player_nbr = 2
         self.game_mode = 0
         self.main_canvas = main_canvas
         self.window = None

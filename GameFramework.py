@@ -4,7 +4,7 @@ import Settings
 import Case
 
 class GameFramework:
-    def __init__(self, settings: Settings, canvas: tk.Canvas, label: tk.Label):
+    def __init__(self, settings: Settings, canvas: tk.Canvas, label: tk.Label, score: tk.Label):
         """
         The class which handles the whole game logic.
         :param settings: The settings class, in order to retrieve some useful data.
@@ -14,6 +14,7 @@ class GameFramework:
         self.settings = settings
         self.canvas = canvas
         self.label = label
+        self.score = score
         self.cases = []
         self.previous = None
         self.player = 0
@@ -60,7 +61,7 @@ class GameFramework:
             return
         # The selection logic
         x, y = real_x // Case.Case.size(), real_y // Case.Case.size()
-        print(f"({x}, {y})")
+        # print(f"({x}, {y})")
         self.previous = self.cases[y][x]
         color = self.settings.player_array[self.player][1]
         self.canvas.itemconfigure(self.previous.id, outline=color, width=2)
@@ -109,6 +110,7 @@ class GameFramework:
             self.player = 0
         (name, color) = self.settings.player_array[self.player]
         self.label.configure(text=name, fg=color)
+        self.score.configure(text=f"Score: {self.scores[self.player]}", fg=color)
 
     def check_sms(self) -> bool:
         """
@@ -134,7 +136,6 @@ class GameFramework:
                     if self.previous.text == "S" and case.text == "M":
                         interesting_couples.append((i, j))
         for (i, j) in interesting_couples.copy():
-            print("(i,j): ", (i,j), "  ", interesting_couples)
             # If the latest placed text was M
             if self.previous.text == "M":
                 if (-i, -j) in interesting_couples:
@@ -150,7 +151,7 @@ class GameFramework:
                 # We continue propagating on the same direction as it looks promising, hehe
                 # TODO: improve this chain of functions (Although, I don't care since it works)
                 last_case = self.propagate(self.propagate(self.previous, (i, j)), (i, j))
-                print("last case: ", last_case, "| (i,j): ", (i,j))
+                # print("last case: ", last_case, "| (i,j): ", (i,j))
                 if last_case and last_case.text == "S":
                     # Player won!
                     interesting_couples.remove((i, j))
@@ -158,8 +159,7 @@ class GameFramework:
                     # TicTacToe game mode
                     if self.settings.game_mode == 1:
                         return True
-        # TODO: Reword the returns to work properly as designed. (Although, I don't care since it works)
-        print("return False", interesting_couples)
+        # TODO: Rework the returns to work properly as designed. (Although, I don't care since it works)
         return False
 
     def propagate(self, from_dir: Case, to_dir: (int, int)) -> Case:
@@ -188,7 +188,7 @@ class GameFramework:
         y1 = self.offset[1] + (end_case.y+0.5) * Case.Case.size()
         self.canvas.create_line(x0, y0, x1, y1, width=2, fill=color, tags="line")
         self.scores[self.player] += 1
-        # TODO: print/show scores
+        self.score.configure(text=f"Score: {self.scores[self.player]}", fg=color)
 
     def is_grid_full(self) -> bool:
         """
@@ -205,7 +205,7 @@ class GameFramework:
         """
         This function ends the game, it can detect if several equally ranked players won.
         """
-        # TODO: Test this function
+        # TODO: Test this function (seems to work)
         max_score = max(self.scores)
         # Here we check if two players have the same score or not
         nbr = 0
@@ -217,6 +217,12 @@ class GameFramework:
             self.label.configure(text=str(nbr) + " equally ranked players won!", fg=color)
         else:
             self.label.configure(text=name + " won!", fg=color)
+        # Show all the players' scores
+        sum_scores = ""
+        for i in range(len(self.settings.player_array)):
+            sum_scores += f"{self.settings.player_array[i][0]}'s score: {self.scores[i]} - "
+        sum_scores = sum_scores.rstrip(" - ")
+        self.score.configure(text=sum_scores, fg=color)
         self.canvas.unbind('<Button-1>')
         self.canvas.unbind('s')
         self.canvas.unbind('m')

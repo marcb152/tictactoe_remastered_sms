@@ -18,13 +18,15 @@ if __name__ == '__main__':
     frame.pack(side=tk.TOP)
     top_label = tk.Label(frame, text="Players", font=('Helvetica','20','bold'))
     top_label.grid(row=0, columnspan=5, padx=5, pady=5)
+    mid_label = tk.Label(frame, text="Score")
+    mid_label.grid(row=1, columnspan=5)
     # Initializes the game framework class
-    gameInstance = GameFramework.GameFramework(settings, canvas, top_label)
+    gameInstance = GameFramework.GameFramework(settings, canvas, top_label, mid_label)
     # Buttons
-    tk.Button(frame, text='Restart', command=gameInstance.restart).grid(row=1, column=0, padx=5, pady=5)
-    tk.Button(frame, text='Settings', command=settings.show).grid(row=1, column=1, padx=5, pady=5)
-    tk.Button(frame, text='Save', command=settings.show, state="disabled").grid(row=1, column=2, padx=5, pady=5)
-    tk.Button(frame, text='Load', command=settings.show, state="disabled").grid(row=1, column=3, padx=5, pady=5)
-    tk.Button(frame, text='Quit', command=window.destroy).grid(row=1, column=4, padx=5, pady=5)
+    tk.Button(frame, text='Restart', command=gameInstance.restart).grid(row=2, column=0, padx=5, pady=5)
+    tk.Button(frame, text='Settings', command=settings.show).grid(row=2, column=1, padx=5, pady=5)
+    tk.Button(frame, text='Save', command=settings.show, state="disabled").grid(row=2, column=2, padx=5, pady=5)
+    tk.Button(frame, text='Load', command=settings.show, state="disabled").grid(row=2, column=3, padx=5, pady=5)
+    tk.Button(frame, text='Quit', command=window.destroy).grid(row=2, column=4, padx=5, pady=5)
 
     window.mainloop()
