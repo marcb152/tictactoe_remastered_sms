@@ -149,7 +149,7 @@ class GameFramework:
             # If the latest placed text was S
             elif self.previous.text == "S":
                 # We continue propagating on the same direction as it looks promising, hehe
-                # TODO: improve this chain of functions (Although, I don't care since it works)
+                # TODO: improve this chain of functions (Although, I don't care since it will always work)
                 last_case = self.propagate(self.propagate(self.previous, (i, j)), (i, j))
                 # print("last case: ", last_case, "| (i,j): ", (i,j))
                 if last_case and last_case.text == "S":
@@ -159,7 +159,7 @@ class GameFramework:
                     # TicTacToe game mode
                     if self.settings.game_mode == 1:
                         return True
-        # TODO: Rework the returns to work properly as designed. (Although, I don't care since it works)
+        # TODO: Rework the returns to work properly as designed. (Although, I don't care since it will always work)
         return False
 
     def propagate(self, from_dir: Case, to_dir: (int, int)) -> Case:

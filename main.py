@@ -3,6 +3,20 @@ import tkinter as tk
 import GameFramework
 import Settings
 
+def save():
+    """
+    Saves everything (mostly).
+    """
+    # TODO: Save the game itself too (gameInstance.save())
+    settings.save()
+
+def load():
+    """
+    Loads all the previously saved data back (if any).
+    """
+    # TODO: be able to load & restore a saved game (gameInstance.load())
+    settings.load()
+
 if __name__ == '__main__':
     window = tk.Tk()
     window.title("SMS Game")
@@ -25,8 +39,8 @@ if __name__ == '__main__':
     # Buttons
     tk.Button(frame, text='Restart', command=gameInstance.restart).grid(row=2, column=0, padx=5, pady=5)
     tk.Button(frame, text='Settings', command=settings.show).grid(row=2, column=1, padx=5, pady=5)
-    tk.Button(frame, text='Save', command=settings.show, state="disabled").grid(row=2, column=2, padx=5, pady=5)
-    tk.Button(frame, text='Load', command=settings.show, state="disabled").grid(row=2, column=3, padx=5, pady=5)
+    tk.Button(frame, text='Save', command=save).grid(row=2, column=2, padx=5, pady=5)
+    tk.Button(frame, text='Load', command=load).grid(row=2, column=3, padx=5, pady=5)
     tk.Button(frame, text='Quit', command=window.destroy).grid(row=2, column=4, padx=5, pady=5)
 
     window.mainloop()

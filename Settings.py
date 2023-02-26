@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 
+import SaveSystem
+
+
 class Settings:
     def __init__(self, main_canvas: tk.Canvas):
         """
@@ -127,3 +130,34 @@ class Settings:
             print("An error was raised while trying to save: ", e)
         finally:
             self.window.destroy()
+
+    def save(self):
+        """
+        This method saves the settings.
+        """
+        data = {
+            "gridSizeX": str(self.gridSizeX),
+            "gridSizeY": str(self.gridSizeY),
+            "game_mode": str(self.game_mode),
+            "player_nbr": str(len(self.player_array))
+        }
+        for i in range(len(self.player_array)):
+            player, color = self.player_array[i]
+            data["player" + str(i)] = player
+            data["color" + str(i)] = color
+
+        SaveSystem.save(data, "settings")
+
+    def load(self):
+        """
+        This method restores the settings previously saved (if any).
+        """
+        data = SaveSystem.load("settings")
+        if len(data) > 0:
+            self.gridSizeX = int(data["gridSizeX"])
+            self.gridSizeY = int(data["gridSizeY"])
+            self.game_mode = int(data["game_mode"])
+
+            self.player_array = [("Player", "black")] * int(data["player_nbr"])
+            for i in range(int(data["player_nbr"])):
+                self.player_array[i] = (data["player" + str(i)], data["color" + str(i)])
