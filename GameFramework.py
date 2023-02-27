@@ -1,5 +1,6 @@
 import tkinter as tk
 
+import SaveSystem
 import Settings
 import Case
 
@@ -20,8 +21,9 @@ class GameFramework:
         self.player = 0
         self.scores = [0] * len(self.settings.player_array)
         self.offset = ()
+        self.data = {}
         self.start()
-        self.switch_player()
+        self.switch_player(first=True)
 
     def start(self):
         """
@@ -90,6 +92,8 @@ class GameFramework:
             self.canvas.itemconfigure(self.previous.id, outline="black", width=1)
             # Checking for end of the game
             has_won = self.check_sms()
+            # Save system
+            self.data[f"Letter_{x}_{y}"] = self.previous.text
             # TicTacToe game mode
             if self.settings.game_mode == 1 and has_won:
                 self.end()
@@ -101,7 +105,7 @@ class GameFramework:
             # The game continues
             self.switch_player()
 
-    def switch_player(self):
+    def switch_player(self, first: bool = False):
         """
         This function performs player-switching logic.
         """
@@ -111,6 +115,8 @@ class GameFramework:
         (name, color) = self.settings.player_array[self.player]
         self.label.configure(text=name, fg=color)
         self.score.configure(text=f"Score: {self.scores[self.player]}", fg=color)
+        if first:
+            self.data["FirstPlayer"] = str(self.player)
 
     def check_sms(self) -> bool:
         """
@@ -244,4 +250,44 @@ class GameFramework:
         self.end()
         self.reset()
         self.start()
-        self.switch_player()
+        self.switch_player(first=True)
+
+    def save(self):
+        """
+        This method saves the game at its current state.
+        Known bug: if the settings change before saving the game, and if the game is not restarted,
+        there will be some issue (player number not matching between the settings and the game save)
+        """
+        SaveSystem.save(self.data, "game")
+
+    def load(self):
+        """
+        This method restores the settings previously saved by playing the game step by step.
+        """
+        # Grab the data back, if any
+        self.data = SaveSystem.load("game")
+        if len(self.data) > 0:
+            # Reset the game
+            self.end()
+            self.reset()
+            self.start()
+            # Set the first player to play
+            self.player = int(self.data["FirstPlayer"])
+            (name, color) = self.settings.player_array[self.player]
+            self.label.configure(text=name, fg=color)
+            self.score.configure(text=f"Score: {self.scores[self.player]}", fg=color)
+            # self.data[f"Letter_{x}_{y}"] = self.previous.text
+            keys = list(self.data.keys())
+            # We use the property of dicts -> they are ordered, which means that the data is in the same order as saved
+            for i in range(1, len(self.data)):
+                # Here we remove the first 7 characters to get the x_y values
+                temp = keys[i][7:].split("_")
+                # So we can get the coordinates stored inside the dict keys
+                x, y = int(temp[0]), int(temp[1])
+                # We play the game, we feed values to our functions
+                self.previous = self.cases[y][x]
+                case = self.data[keys[i]]
+                is_key_s = False
+                if case == "S":
+                    is_key_s = True
+                self.key_press(is_key_s)

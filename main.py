@@ -7,15 +7,15 @@ def save():
     """
     Saves everything (mostly).
     """
-    # TODO: Save the game itself too (gameInstance.save())
     settings.save()
+    gameInstance.save()
 
 def load():
     """
     Loads all the previously saved data back (if any).
     """
-    # TODO: be able to load & restore a saved game (gameInstance.load())
     settings.load()
+    gameInstance.load()
 
 if __name__ == '__main__':
     window = tk.Tk()
